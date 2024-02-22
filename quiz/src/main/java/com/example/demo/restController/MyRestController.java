@@ -1,4 +1,4 @@
-package com.example.demo.RestController;
+package com.example.demo.restController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.PageVO;
+import rest.PageVO;
 
 
 @RestController
