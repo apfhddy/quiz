@@ -1,11 +1,10 @@
 package com.example.demo.restController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,30 +21,19 @@ import rest.PageVO;
 public class MyRestController {
 	
 	@GetMapping("pages")
-	public List<PageVO> getPages(@RequestParam(name="url") String url, @RequestParam(name="token") String token) throws IOException {
-		URL userMainPage = new URL(url); 
+	public List<Map<String,Object>> getPages(@RequestParam(name="url") String url, @RequestParam(name="token") String token) throws IOException {
+		Document dom = Jsoup.connect(url).get();
 		
-		BufferedReader bf = new BufferedReader(new InputStreamReader(userMainPage.openStream(),"UTF-8"));
-		StringBuilder html = new StringBuilder();
+		Elements pageList = dom.select(".page__content.e-content"); 
 		
-		String line = null;
-		while((line = bf.readLine()) != null) {
-			html.append(line);
-		}
-		
-		bf.close();
-		Document dom = Jsoup.parse(html.toString());
-		
-		Elements pageList = dom.select(".entries-list");
-		
-		List<PageVO> returnList = new ArrayList<>();
-
+		List<Map<String,Object>> returnList = new ArrayList<>();
+ 
 		Elements pageChild = pageList.get(0).children();
-		for(Element e : pageChild) {
-			PageVO pd = new PageVO();
-			pd.setTitle(e.select("a").text());
-			pd.setUrl(e.select("a").attr("href"));
-			returnList.add(pd);
+		for(int i = 0; i < pageChild.size(); i++) {
+			//pd.setUrl(e.select("a").attr("href"));
+			Map<String,Object> pageChildData = new HashMap<String, Object>();
+			pageChildData.put("title", pageChild.get(i).select("a").text());
+			returnList.add(pageChildData);
 		}
 		
 		return returnList;
