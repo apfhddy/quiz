@@ -42,6 +42,7 @@ public class MyRestController {
 				childs.add(e.select("h1").text());
 			}
 			pageChildData.put("title", pageChild.get(i).select("a").text());
+			pageChildData.put("url", pageChild.get(i).select("a").attr("href"));
 			pageChildData.put("childs", childs);
 			returnList.add(pageChildData);
 		}

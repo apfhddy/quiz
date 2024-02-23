@@ -55,6 +55,48 @@
 		padding: 2% 1% 2% 4%;
 		display: flex;
 	}
+
+
+
+
+	.checks{
+		box-shadow: 0px 0px 6px gray;
+		border-radius: 3px;
+		width: 170px;
+	}
+
+	.checks-header{
+		border-bottom: 1px solid gray;
+		padding: 2% 1% 2% 4%;		
+		font-weight: bold;
+		font-size: 15px;
+		
+	}
+	.checks-footer{
+		border-top: 1px solid gray;
+		padding: 2% 1% 2% 4%;		
+		font-size: 12px;
+		
+	}
+	.checks-item{
+		padding: 2% 1% 2% 4%;
+		cursor: pointer;
+	}
+	.checks-item > div:nth-child(1){
+		display: flex;
+	}
+	.checks-item > div:nth-child(1) > div:nth-child(1){
+		width: 90%;
+	}
+	.item-childs > .childs-item{
+		display: flex;
+		padding-left: 20px;
+	}
+	.item-childs > .childs-item> div:nth-child(1){
+		width: 90%;
+		display: flex;
+		padding-left: 3px;
+	}
 	
 </style>
 <meta charset="UTF-8">
@@ -75,6 +117,34 @@
 						페이지 목록	
 					</div>
 					<div class="pages-list">
+					</div>
+				</div>
+				<div class="checks">
+					<div class="checks-header">
+						선택 목록	
+					</div>
+					<div class="checks-list">
+					</div>
+					<div class="checks-footer">
+						<table>
+							<tr>
+								<td>문제 수 :</td>
+								<td><input style="width: 40px;" type = "number"></td>
+							</tr>
+							<tr>
+								<td>문제 형태 :</td>
+								<td>
+									<select>
+										<option>객관식</option>
+										<option>주관식</option>
+										<option>혼합</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td><input type="button" value="시작"></td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<div class="childs" style="display: none;">
@@ -99,14 +169,16 @@
 	dom.querySelector('.urlButton').addEventListener('click',func['getPages']);
 	
 	function close(){
-		let url;
-		let resultPage;
+		let url;//url저장 변수
+		let resultPage;//반환값을 받는 변수
+		let pageDom = {};
 		
-		let firstPage;
 		
-		let pageIndex;
+		let firstPage;//첫번째 이름이랑 두번째 이름이랑 다르면 
 		
-		let checkList = {};
+		let pageIndex;//현재 선택한 페이지
+		
+		let checkList = {};//체크한 체크 리스트
 		
 		
 		function getPages(){
@@ -157,6 +229,24 @@
 			
 		}
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		function getChild(){
 			let index = domIndexof(dom.querySelector('.pages-list'), this);
 			if(pageIndex == index){
@@ -179,7 +269,7 @@
 				const newLabel = dom.createElement('label');
 				const newInput = dom.createElement('input');
 				
-				if(checkList[pageIndex] != null && checkList[pageIndex][i-1] != null)newInput.setAttribute("checked", "checked");
+				if(checkList[pageIndex] != null && checkList[pageIndex]['childs'][c] != null)newInput.setAttribute("checked", "checked");
 				
 				let id = 'cb'+i++;
 				
@@ -189,18 +279,76 @@
 				newInput.type = 'checkbox';
 				newInput.id = id;
 				newInput.addEventListener("click", function(){
-					let childIndex = domIndexof(dom.querySelector('.childs-list'), this.parentElement);
+					let title = this.parentElement.children[0].innerText;
 					if(this.checked == true){
-						if(checkList[pageIndex] == null)checkList[pageIndex] = {};
-						checkList[pageIndex][childIndex] = 1;
-					}else{
-						delete checkList[pageIndex][childIndex];
+						if(checkList[pageIndex] == null){
+							checkList[pageIndex] = {childs:{},url:resultPage[pageIndex]['url']};
 						
-						if(Object.keys(checkList[pageIndex]).length == 0)
-							delete checkList[pageIndex]
+							const checkDiv = dom.createElement("div");
+							checkDiv.className = 'checks-item';
+
+							const titleDiv = dom.createElement("div");
+							const titlecd1 = dom.createElement("div");
+							const titlecd2 = dom.createElement("div");
+							titlecd1.innerText = resultPage[pageIndex]['title'];
+							titlecd2.innerText = '▽';
+							
+							titleDiv.appendChild(titlecd1);
+							titleDiv.appendChild(titlecd2);
+							
+							const childsDiv = dom.createElement("div");
+							childsDiv.style.display = 'none';
+							childsDiv.className = 'item-childs';
+							
+							titleDiv.addEventListener("click", function() {
+								if(childsDiv.style.display == 'none'){
+									childsDiv.style.display = '';
+									titlecd2.innerText = '△';
+								}else{
+									childsDiv.style.display = 'none';
+									titlecd2.innerText = '▽';
+								}
+									
+							})
+							
+							
+							checkDiv.appendChild(titleDiv);
+							checkDiv.appendChild(childsDiv);
+							
+							dom.querySelector('.checks-list').appendChild(checkDiv);
+							pageDom[pageIndex] = {childsDom:{},mainDom:checkDiv};
+						}
+						checkList[pageIndex]['childs'][title] = 1;
+						
+						
+						const itemDiv = dom.createElement("div");
+						itemDiv.className = 'childs-item';
+						
+						const itemcd1 = dom.createElement("div");
+						itemcd1.innerText = title;
+						
+						const itemcd2 = dom.createElement("div");
+						itemcd2.innerText = 'x';
+						
+						itemDiv.appendChild(itemcd1);
+						itemDiv.appendChild(itemcd2);
+						
+						pageDom[pageIndex]['mainDom'].querySelector('.item-childs').appendChild(itemDiv);
+						pageDom[pageIndex]['childsDom'][title] = itemDiv;
+						
+					}else{
+						delete checkList[pageIndex]['childs'][title];
+						pageDom[pageIndex]['mainDom'].querySelector('.item-childs').removeChild(pageDom[pageIndex]['childsDom'][title]);
+						delete pageDom[pageIndex]['childsDom'][title];
+						if(Object.keys(checkList[pageIndex]['childs']).length == 0){
+							delete checkList[pageIndex];
+							
+							dom.querySelector('.checks-list').removeChild(pageDom[pageIndex]['mainDom']);	
+							delete pageDom[pageIndex];
+						}
+						console.log(pageDom);
 					}
 				})
-				
 				mainDiv.appendChild(newLabel);
 				mainDiv.appendChild(newInput);
 				
