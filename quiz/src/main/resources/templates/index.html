@@ -14,7 +14,17 @@
 	}
 	.pages-header{
 		border-bottom: 1px solid gray;
+		padding: 2% 1% 2% 4%;		
+		font-weight: bold;
+		font-size: 17px;
+	}
+	.pages-item{
 		padding: 2% 1% 2% 4%;
+		cursor: pointer;
+		display: flex;
+	}
+	.pages-item > div:nth-child(1){
+		width: 90%;
 	}
 	
 </style>
@@ -50,25 +60,87 @@
 	const func = close();
 	
 	
-	dom.querySelector('.urlButton').addEventListener("click",func['getUrl']);
+	dom.querySelector('.urlButton').addEventListener('click',func['getPages']);
 	
 	function close(){
 		let url;
-		function getUrl(){
+		let resultPage;
+		
+		let pageIndex;
+		
+		
+		function getPages(){
 			url = this.form.children[0].value;
 			
 			$.ajax({
-				url:"pages",
+				url:'pages',
 				data:{url:url,token:''},
 				type:'get',
 				success: function(result){
-					console.log(result);
+					if(result == '')return;
+					resultPage = result;
+					resultPage.forEach( i => {
+						const mainDiv = dom.createElement('div');
+						mainDiv.className = 'pages-item'
+						
+						const childDiv1 = dom.createElement('div');
+						const childDiv2 = dom.createElement('div');
+						childDiv1.innerText = i['title'];
+						childDiv2.innerText = '>';
+						
+						mainDiv.appendChild(childDiv1);
+						mainDiv.appendChild(childDiv2);
+						
+						
+						mainDiv.addEventListener('click', getChild);
+						
+						dom.querySelector('.pages-list').appendChild(mainDiv);
+
+						
+						
+						//사후 처리
+						
+						this.form.children[0].setAttribute('readonly', 'readonly');
+						this.form.children[0].style.backgroundColor='gray';
+						
+						this.form.children[1].value='초기화';
+					})
 				}
 			})
+			
+			
 		}
 		
+		function getChild(){
+			pageIndex = domIndexof(dom.querySelector('.pages-list'), this);
+			
+			console.log(resultPage[pageIndex]['childs']);
+			
+		}
+		
+		
+		function domIndexof(parent,child){
+			const childs = Array.from(parent.children);
+			
+			for(let i = 0; i < childs.length; i++){
+				if(childs[i] == child)return i;
+			}
+			return -1;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		return {
-			getUrl:getUrl
+			getPages:getPages
 		}
 	}
 	

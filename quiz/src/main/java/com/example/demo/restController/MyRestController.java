@@ -20,6 +20,9 @@ public class MyRestController {
 	
 	@GetMapping("pages")
 	public List<Map<String,Object>> getPages(@RequestParam(name="url") String url, @RequestParam(name="token") String token) throws IOException {
+		if(!url.contains("http"))return null;
+		
+		
 		Document dom = Jsoup.connect(url).get();
 		url = url.substring(0,url.lastIndexOf(".io")+3);
 		Elements pageList = dom.select(".page__content.e-content"); 
