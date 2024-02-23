@@ -6,6 +6,10 @@
 		padding-left: 2%;
 		padding-right: 2%;
 	}
+	
+	
+	
+	
 	.pages{
 		box-shadow: 0px 0px 6px gray;
 		border-radius: 3px;
@@ -27,6 +31,31 @@
 		width: 90%;
 	}
 	
+	
+	
+	
+	
+	.childs{
+		position: absolute;
+		left: 310px;
+		
+		box-shadow: 0px 0px 6px gray;
+		border-radius: 3px;
+		width: 170px;
+	}
+
+	.childs-header{
+		border-bottom: 1px solid gray;
+		padding: 2% 1% 2% 4%;		
+		font-weight: bold;
+		font-size: 15px;
+		
+	}
+	.childs-item{
+		padding: 2% 1% 2% 4%;
+		display: flex;
+	}
+	
 </style>
 <meta charset="UTF-8">
 <title>Quiz</title>
@@ -46,6 +75,13 @@
 						페이지 목록	
 					</div>
 					<div class="pages-list">
+					</div>
+				</div>
+				<div class="childs" style="display: none;">
+					<div class="childs-header">
+						단원 목록	
+					</div>
+					<div class="childs-list">
 					</div>
 				</div>
 			</div>
@@ -70,7 +106,8 @@
 		
 		
 		function getPages(){
-			url = this.form.children[0].value;
+			const form = this.form;
+			url = form.children[0].value;
 			
 			$.ajax({
 				url:'pages',
@@ -79,12 +116,14 @@
 				success: function(result){
 					if(result == '')return;
 					resultPage = result;
+					dom.querySelector('.pages-list').innerHTML = '';
 					resultPage.forEach( i => {
-						const mainDiv = dom.createElement('div');
-						mainDiv.className = 'pages-item'
 						
+						const mainDiv = dom.createElement('div');
 						const childDiv1 = dom.createElement('div');
 						const childDiv2 = dom.createElement('div');
+						
+						mainDiv.className = 'pages-item'
 						childDiv1.innerText = i['title'];
 						childDiv2.innerText = '>';
 						
@@ -100,10 +139,10 @@
 						
 						//사후 처리
 						
-						this.form.children[0].setAttribute('readonly', 'readonly');
-						this.form.children[0].style.backgroundColor='gray';
+						form.children[0].setAttribute('readonly', 'readonly');
+						form.children[0].style.backgroundColor='gray';
 						
-						this.form.children[1].value='초기화';
+						form.children[1].value='초기화';
 					})
 				}
 			})
@@ -112,10 +151,59 @@
 		}
 		
 		function getChild(){
-			pageIndex = domIndexof(dom.querySelector('.pages-list'), this);
+			let index = domIndexof(dom.querySelector('.pages-list'), this);
+			if(pageIndex == index){
+				dom.querySelector('.childs').style.display = 'none';
+				pageIndex = null;
+				return;
+			}
+			pageIndex = index;
 			
-			console.log(resultPage[pageIndex]['childs']);
+			dom.querySelector('.childs').style.top = (this.getBoundingClientRect().y-30)+'px';
+			dom.querySelector('.childs-list').innerHTML = '';
 			
+			let i = 1;
+			resultPage[pageIndex]['childs'].forEach( c => {
+				const mainDiv = dom.createElement('div');
+				
+				mainDiv.className = 'childs-item'
+	
+				
+				const newLabel = dom.createElement('label');
+				const newInput = dom.createElement('input');
+				
+				let id = 'cb'+i++;
+				
+				newLabel.setAttribute('for', id);
+				newLabel.innerText = c;
+				
+				newInput.type = 'checkbox';
+				newInput.id = id;
+				
+				mainDiv.appendChild(newLabel);
+				mainDiv.appendChild(newInput);
+				
+				dom.querySelector('.childs-list').appendChild(mainDiv);
+			});
+			
+			if(dom.querySelector('.childs').style.display == '')return;
+			dom.querySelector('.childs').style.display = '';
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		function mouseOutClick(target,clickTarget,fn){
+			if(!target.contains(clickTarget))fn();
 		}
 		
 		
