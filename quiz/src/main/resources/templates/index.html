@@ -102,7 +102,11 @@
 		let url;
 		let resultPage;
 		
+		let firstPage;
+		
 		let pageIndex;
+		
+		let checkList = {};
 		
 		
 		function getPages(){
@@ -116,6 +120,9 @@
 				success: function(result){
 					if(result == '')return;
 					resultPage = result;
+					fistPage = resultPage[0]['title'];
+					
+					
 					dom.querySelector('.pages-list').innerHTML = '';
 					resultPage.forEach( i => {
 						
@@ -172,6 +179,8 @@
 				const newLabel = dom.createElement('label');
 				const newInput = dom.createElement('input');
 				
+				if(checkList[pageIndex] != null && checkList[pageIndex][i-1] != null)newInput.setAttribute("checked", "checked");
+				
 				let id = 'cb'+i++;
 				
 				newLabel.setAttribute('for', id);
@@ -179,6 +188,18 @@
 				
 				newInput.type = 'checkbox';
 				newInput.id = id;
+				newInput.addEventListener("click", function(){
+					let childIndex = domIndexof(dom.querySelector('.childs-list'), this.parentElement);
+					if(this.checked == true){
+						if(checkList[pageIndex] == null)checkList[pageIndex] = {};
+						checkList[pageIndex][childIndex] = 1;
+					}else{
+						delete checkList[pageIndex][childIndex];
+						
+						if(Object.keys(checkList[pageIndex]).length == 0)
+							delete checkList[pageIndex]
+					}
+				})
 				
 				mainDiv.appendChild(newLabel);
 				mainDiv.appendChild(newInput);
