@@ -11,6 +11,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,9 +52,9 @@ public class MyRestController {
 		return returnList;
 	}
 	
-	@GetMapping("quizjson")
-	public String getQuizeToJson(@RequestParam(name="checkList") Map<String,Object> jsonString) {
-		System.out.println(jsonString);
+	@PostMapping("quizjson")
+	public String getQuizeToJson(@RequestBody Map<String,Object> checkList) {
+		System.out.println(checkList.get("0"));
 		return "1";
 	}
 	
