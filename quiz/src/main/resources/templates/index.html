@@ -171,7 +171,7 @@
 	
 	
 	dom.querySelector('.urlButton').addEventListener('click',func['getPages']);
-	dom.querySelector('.testButton').addEventListener('click',func['startQuiz']);
+	dom.querySelector('.testButton').addEventListener('click',func['getQuizToJson']);
 	
 	function close(){
 		let url;//url저장 변수
@@ -389,9 +389,10 @@
 		function getQuizToJson(){
 			$.ajax({
 				url:"quizjson",
-				data:JSON.stringify(checkList),
+				data:{checkList:JSON.stringify(checkList)},
 				type:'get',
-				success: console.log('성공');
+				contentType: 'application/json',
+				success: console.log('성공')
 			})
 		}
 		
@@ -438,7 +439,7 @@
 		
 		return {
 			getPages:getPages,
-			startQuiz:startQuiz
+			getQuizToJson:getQuizToJson
 		}
 	}
 	

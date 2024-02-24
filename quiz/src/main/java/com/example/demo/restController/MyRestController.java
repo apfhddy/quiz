@@ -24,7 +24,7 @@ public class MyRestController {
 		
 		
 		Document dom = Jsoup.connect(url).get();
-		url = url.substring(0,url.lastIndexOf(".io")+3);
+		url = url.substring(0,url.indexOf(".io")+3);
 		Elements pageList = dom.select(".page__content.e-content"); 
 		
 		List<Map<String,Object>> returnList = new ArrayList<>();
@@ -48,6 +48,12 @@ public class MyRestController {
 		}
 		
 		return returnList;
+	}
+	
+	@GetMapping("quizjson")
+	public String getQuizeToJson(@RequestParam(name="checkList") Map<String,Object> jsonString) {
+		System.out.println(jsonString);
+		return "1";
 	}
 	
 }
