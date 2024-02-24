@@ -130,25 +130,27 @@
 					<div class="checks-list">
 					</div>
 					<div class="checks-footer">
-						<table>
-							<tr>
-								<td>문제 수 :</td>
-								<td><input style="width: 40px;" type = "number" value = "20"></td>
-							</tr>
-							<tr>
-								<td>문제 형태 :</td>
-								<td>
-									<select>
-										<option>객관식</option>
-										<option>주관식</option>
-										<option>혼합</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td><input class="testButton" type="button" value="시작"></td>
-							</tr>
-						</table>
+						<form>
+							<table>
+								<tr>
+									<td>문제 수 :</td>
+									<td><input name="cnt" style="width: 40px;" type = "number" value = "20"></td>
+								</tr>
+								<tr>
+									<td>문제 형태 :</td>
+									<td>
+										<select name="type">
+											<option value="1">객관식</option>
+											<option value="2">주관식</option>
+											<option value="3">혼합</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td><input class="testButton" type="button" value="시작"></td>
+								</tr>
+							</table>
+						</form>
 					</div>
 				</div>
 				<div class="childs" style="display: none;">
@@ -387,12 +389,22 @@
 		
 		
 		function getQuizToJson(){
+			const cnt = this.form.cnt.value;
+			const type = this.form.type.value;
 			$.ajax({
 				url:"quizjson",
 				data:JSON.stringify({checkList:checkList,url:url}),
 				type:'post',
 			 	contentType: 'application/json',
-				success: console.log('성공')
+				success: function(json){
+					$.ajax({
+						url:"quiz",
+						data:JSON.stringify({json:json,cnt:cnt,type:type}),
+						type:'post',
+					 	contentType: 'application/json',
+					 	success:console.log('hi')
+					})
+				}
 			})
 		}
 		

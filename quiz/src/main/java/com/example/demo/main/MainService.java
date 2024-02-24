@@ -1,4 +1,4 @@
-package com.example.demo.restController;
+package com.example.demo.main;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,18 +10,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
-
-@RestController
-public class MyRestController {
+@Service
+public class MainService {
 	
-	@GetMapping("pages")
-	public List<Map<String,Object>> getPages(@RequestParam(name="url") String url, @RequestParam(name="token") String token) throws IOException {
+	public List<Map<String,Object>> getPages(String url, String token) throws IOException {
 		if(!url.contains("http"))return null;
 		
 		
@@ -52,9 +46,8 @@ public class MyRestController {
 		return returnList;
 	}
 	
-	@PostMapping("quizjson")
 	@SuppressWarnings("unchecked")
-	public String getQuizeToJson(@RequestBody Map<String,Object> body) throws IOException {
+	public List<Map<String,Object>> getQuizeToJson(Map<String,Object> body) throws IOException {
 		Map<String,Object> checkList =  (Map<String,Object>)body.get("checkList");
 		String url = (String)body.get("url");
 		url = url.substring(0,url.indexOf(".io")+3);
@@ -68,17 +61,23 @@ public class MyRestController {
 			Document dom = Jsoup.connect(url+pageData.get("url")).get();
 			
 			for(String childTitle : ((Map<String,Object>)pageData.get("childs")).keySet()) {
-				trs.add(dom.getElementById(childTitle).parent().children().get(1).children().get(0).children());
+				trs.add((dom.getElementById(childTitle).parent().children().get(1).children().get(0).children()));
 			}
 		}
 		
+		List<Map<String,Object>> quizjson = new ArrayList<Map<String,Object>>();
 		
+		for(Elements es : trs) {
+			for(Element e : es) {
+				Map<String,Object> item = new HashMap<String, Object>();
+				
+				item.put("en", e.children().get(0).text());
+				item.put("kr", e.children().get(0).text());
+				
+				quizjson.add(item);
+			}
+		}
 		
-		
-		
-		
-		
-		return "1";
+		return quizjson;
 	}
-	
 }
