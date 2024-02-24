@@ -53,8 +53,31 @@ public class MyRestController {
 	}
 	
 	@PostMapping("quizjson")
-	public String getQuizeToJson(@RequestBody Map<String,Object> checkList) {
-		System.out.println(checkList.get("0"));
+	@SuppressWarnings("unchecked")
+	public String getQuizeToJson(@RequestBody Map<String,Object> body) throws IOException {
+		Map<String,Object> checkList =  (Map<String,Object>)body.get("checkList");
+		String url = (String)body.get("url");
+		url = url.substring(0,url.indexOf(".io")+3);
+		
+		
+		List<Elements> trs = new ArrayList<Elements>();
+		
+		for(String pageIndex : checkList.keySet()) {
+			Map<String,Object> pageData = (Map<String,Object>)checkList.get(pageIndex);
+			
+			Document dom = Jsoup.connect(url+pageData.get("url")).get();
+			
+			for(String childTitle : ((Map<String,Object>)pageData.get("childs")).keySet()) {
+				trs.add(dom.getElementById(childTitle).parent().children().get(1).children().get(0).children());
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
 		return "1";
 	}
 	

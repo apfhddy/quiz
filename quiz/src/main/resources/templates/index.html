@@ -389,7 +389,7 @@
 		function getQuizToJson(){
 			$.ajax({
 				url:"quizjson",
-				data:JSON.stringify(checkList),
+				data:JSON.stringify({checkList:checkList,url:url}),
 				type:'post',
 			 	contentType: 'application/json',
 				success: console.log('성공')
