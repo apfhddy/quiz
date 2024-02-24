@@ -91,11 +91,15 @@
 	.item-childs > .childs-item{
 		display: flex;
 		padding-left: 20px;
+		font-size: 12px;
 	}
-	.item-childs > .childs-item> div:nth-child(1){
+	.item-childs > .childs-item > div:nth-child(1){
 		width: 90%;
-		display: flex;
 		padding-left: 3px;
+	}
+	.item-childs > .childs-item > div:nth-child(2){
+		width: 10%;
+		text-align: center;
 	}
 	
 </style>
@@ -129,7 +133,7 @@
 						<table>
 							<tr>
 								<td>문제 수 :</td>
-								<td><input style="width: 40px;" type = "number"></td>
+								<td><input style="width: 40px;" type = "number" value = "20"></td>
 							</tr>
 							<tr>
 								<td>문제 형태 :</td>
@@ -142,7 +146,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td><input type="button" value="시작"></td>
+								<td><input class="testButton" type="button" value="시작"></td>
 							</tr>
 						</table>
 					</div>
@@ -167,6 +171,7 @@
 	
 	
 	dom.querySelector('.urlButton').addEventListener('click',func['getPages']);
+	dom.querySelector('.testButton').addEventListener('click',func['startQuiz']);
 	
 	function close(){
 		let url;//url저장 변수
@@ -176,7 +181,7 @@
 		
 		let firstPage;//첫번째 이름이랑 두번째 이름이랑 다르면 
 		
-		let pageIndex;//현재 선택한 페이지
+		let pageData = {index:null,childs:{}};//현재 선택한 페이지
 		
 		let checkList = {};//체크한 체크 리스트
 		
@@ -249,18 +254,20 @@
 		
 		function getChild(){
 			let index = domIndexof(dom.querySelector('.pages-list'), this);
-			if(pageIndex == index){
+			if(pageData['index'] == index){
 				dom.querySelector('.childs').style.display = 'none';
-				pageIndex = null;
+				pageData = {index:null,childs:{}};
 				return;
 			}
+			pageData['index'] = index;
+			
 			pageIndex = index;
 			
 			dom.querySelector('.childs').style.top = (this.getBoundingClientRect().y-30)+'px';
 			dom.querySelector('.childs-list').innerHTML = '';
 			
 			let i = 1;
-			resultPage[pageIndex]['childs'].forEach( c => {
+			resultPage[pageData['index']]['childs'].forEach( c => {
 				const mainDiv = dom.createElement('div');
 				
 				mainDiv.className = 'childs-item'
@@ -330,6 +337,11 @@
 						const itemcd2 = dom.createElement("div");
 						itemcd2.innerText = 'x';
 						
+						itemcd2.addEventListener("click", function(e) {
+							pageChildDel(pageIndex, title);
+						})
+						
+						
 						itemDiv.appendChild(itemcd1);
 						itemDiv.appendChild(itemcd2);
 						
@@ -337,24 +349,16 @@
 						pageDom[pageIndex]['childsDom'][title] = itemDiv;
 						
 					}else{
-						delete checkList[pageIndex]['childs'][title];
-						pageDom[pageIndex]['mainDom'].querySelector('.item-childs').removeChild(pageDom[pageIndex]['childsDom'][title]);
-						delete pageDom[pageIndex]['childsDom'][title];
-						if(Object.keys(checkList[pageIndex]['childs']).length == 0){
-							delete checkList[pageIndex];
-							
-							dom.querySelector('.checks-list').removeChild(pageDom[pageIndex]['mainDom']);	
-							delete pageDom[pageIndex];
-						}
-						console.log(pageDom);
+						pageChildDel(pageIndex, title);
 					}
 				})
 				mainDiv.appendChild(newLabel);
 				mainDiv.appendChild(newInput);
 				
+				pageData['childs'][c] = mainDiv;
+				
 				dom.querySelector('.childs-list').appendChild(mainDiv);
 			});
-			
 			if(dom.querySelector('.childs').style.display == '')return;
 			dom.querySelector('.childs').style.display = '';
 		}
@@ -367,9 +371,39 @@
 		
 		
 		
+		function pageChildDel(index,title){
+			if(pageData['index'] != null && pageData['index'] == index)pageData['childs'][title].children[1].checked = false;
+			pageDom[index]['mainDom'].querySelector('.item-childs').removeChild(pageDom[index]['childsDom'][title]);
+			delete checkList[index]['childs'][title];
+			delete pageDom[index]['childsDom'][title];
+			if(Object.keys(checkList[index]['childs']).length == 0){
+				delete checkList[index];
+				
+				dom.querySelector('.checks-list').removeChild(pageDom[index]['mainDom']);	
+				delete pageDom[index];
+			}
+		}
 		
 		
 		
+		function getQuizToJson(){
+			$.ajax({
+				url:"quizjson",
+				data:JSON.stringify(checkList),
+				type:'get',
+				success: console.log('성공');
+			})
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+
 		
 		function mouseOutClick(target,clickTarget,fn){
 			if(!target.contains(clickTarget))fn();
@@ -396,8 +430,15 @@
 		
 		
 		
+		
+		
+		
+		
+		
+		
 		return {
-			getPages:getPages
+			getPages:getPages,
+			startQuiz:startQuiz
 		}
 	}
 	
