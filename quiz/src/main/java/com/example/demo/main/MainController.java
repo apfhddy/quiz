@@ -96,13 +96,14 @@ public class MainController {
 		
 		
 		for(int i = 0; i < allQuizCnt; i++) {
-			int index = mainService.RAN(0, keys.size()-1);
-			int key = keys.get(index);
+			int key = mainService.RAN(0, keys.size()-1);
+			int index = keys.get(key);
 			
-			ranQuiz.compute(key, (k,v) -> v= v-1);
-			if(ranQuiz.get(key) == 0) {
-				ranQuiz.remove(key);
-				keys.remove(index);
+			//index하나 가져와서 빼는 작업
+			ranQuiz.compute(index, (k,v) -> v= v-1);
+			if(ranQuiz.get(index) == 0) {
+				ranQuiz.remove(index);
+				keys.remove(key);
 			}
 
 			
