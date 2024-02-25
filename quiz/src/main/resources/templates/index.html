@@ -137,6 +137,16 @@
 									<td><input name="cnt" style="width: 40px;" type = "number" value = "20"></td>
 								</tr>
 								<tr>
+									<td>문제 언어 :</td>
+									<td>
+										<select name="type">
+											<option value="1">영어</option>
+											<option value="2">한국어</option>
+											<option value="3">혼합</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
 									<td>문제 형태 :</td>
 									<td>
 										<select name="type">
@@ -399,7 +409,7 @@
 				success: function(json){
 					$.ajax({
 						url:"quiz",
-						data:JSON.stringify({json:json,cnt:cnt,type:type}),
+						data:JSON.stringify({json:json,cnt:+cnt,type:+type,url:url}),
 						type:'post',
 					 	contentType: 'application/json',
 					 	success:console.log('hi')

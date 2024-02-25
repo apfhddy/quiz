@@ -1,5 +1,6 @@
 package com.example.demo.main;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,14 @@ public class MainService {
 				quizjson.add(item);
 			}
 		}
-		
 		return quizjson;
 	}
+	
+	
+	
+	
+    public  int RAN(int min,int max) { /// 1 10
+    	max = max - min +1;
+    	return (int)(Math.random()*max)+min;
+    }
 }
