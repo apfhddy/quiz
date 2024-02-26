@@ -113,7 +113,6 @@ public class MainService {
 		
 		
 		
-		Map<String,Object> quizs = new HashMap<>();  
 		
 		Map<Integer,Integer> indexCnt = new HashMap<Integer,Integer>();
 		List<Integer> keys = new ArrayList<Integer>();
@@ -136,6 +135,7 @@ public class MainService {
 		}
 		
 		
+		List<Map<String,Object>> quizs = new ArrayList<>();  
 		
 		
 		for(int i = 0; i < allQuizCnt; i++) {
@@ -148,8 +148,6 @@ public class MainService {
 			Map<String,Object> parameter = new HashMap<String, Object>();
 			parameter.put("json", oneJson); 
 			if((boolean)funcList.get(ranfuncIndex).get("ex")) {
-				
-			}else {
 				
 			}
 			
@@ -205,8 +203,19 @@ public class MainService {
 	
 	
 	public Map<String,Object> quiz1(Map<String,Object> parameter){
-		System.out.println(parameter);
-		return null;
+		Map<String,Object> oneQuiz = new HashMap<String, Object>();
+		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
+		
+		Map<String,Object> answers = new HashMap<String, Object>();
+		String[] answersArr = ((String)json.get("kr")).split(",");
+		for(int i = 0; i < answersArr.length; i++) {
+			answers.put(answersArr[i], 1);
+		}
+		
+		oneQuiz.put("title", json.get("en")+"ÀÇ ¶æÀº?");
+		oneQuiz.put("answers", answers);
+		oneQuiz.put("ex", false);
+		return oneQuiz;
 	}
 	
 	
