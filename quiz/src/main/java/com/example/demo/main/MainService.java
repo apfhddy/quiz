@@ -1,7 +1,11 @@
 package com.example.demo.main;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Service
 public class MainService {
@@ -54,7 +59,7 @@ public class MainService {
 			Map<String,Object> onePage = new HashMap<String, Object>();
 			Element e = pageList.get(i).select("a").get(1);
 			onePage.put("title", e.attr("title").replace(".txt", ""));
-			onePage.put("url", e.attr("href"));
+			onePage.put("url", e.attr("href").replace("/blob", ""));
 			returnList.add(onePage); 
 		}
 		 
@@ -63,14 +68,31 @@ public class MainService {
 	
 	
 	public List<String> getChilds(String url) {
-		Document dom = null;
+		URL page = null; 
 		try {
-			dom = Jsoup.connect("https://github.com"+url).get();
+			page = new URL("https://raw.githubusercontent.com/"+url);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		BufferedReader br = null;
+		
+		StringBuilder textFile = new StringBuilder();
+		String line = null;
+		try {
+			br =new BufferedReader(new InputStreamReader(page.openStream()));
+			while((line = br.readLine())!= null) {
+				textFile.append(line+",");
+			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(dom.html());
-		System.out.println(url);
+		
+		System.out.println(textFile);
+		
+		
 		return null;
 	} 
 	
