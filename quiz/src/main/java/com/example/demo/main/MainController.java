@@ -105,7 +105,7 @@ public class MainController {
 				ranQuiz.remove(index);
 				keys.remove(key);
 			}
-
+			System.out.println(json.get(index));
 			
 			switch(type) {
 			case 1: //°´°ü½Ä
