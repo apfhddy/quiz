@@ -266,6 +266,7 @@
 		
 		function getChild(){
 			let index = domIndexof(dom.querySelector('.pages-list'), this);
+			console.log(index);
 			if(pageData['index'] == index){
 				dom.querySelector('.childs').style.display = 'none';
 				pageData = {index:null,childs:{}};
@@ -274,6 +275,19 @@
 			pageData['index'] = index;
 			
 			pageIndex = index;
+			
+			
+			$.ajax({
+				url:'childs',
+				data:{url:resultPage[index]['url']},
+				type:'get',
+				success: function(result){
+					console.log(result);
+				}
+			})
+			
+			return
+			
 			
 			dom.querySelector('.childs').style.top = (this.getBoundingClientRect().y-30)+'px';
 			dom.querySelector('.childs-list').innerHTML = '';
@@ -290,7 +304,7 @@
 				
 				if(checkList[pageIndex] != null && checkList[pageIndex]['childs'][c] != null)newInput.setAttribute("checked", "checked");
 				
-				let id = 'cb'+i++;
+				let id = 'check-'+i++;
 				
 				newLabel.setAttribute('for', id);
 				newLabel.innerText = c;
@@ -350,7 +364,8 @@
 						itemcd2.innerText = 'x';
 						
 						itemcd2.addEventListener("click", function(e) {
-							pageChildDel(pageIndex, title);
+							let listIndex = domIndexof(dom.querySelector('.checks-list'),this.parentElement.parentElement.parentElement);
+							pageChildDel(listIndex, title);
 						})
 						
 						

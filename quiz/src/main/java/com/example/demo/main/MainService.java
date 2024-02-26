@@ -46,31 +46,35 @@ public class MainService {
 		
 		
 		Document dom = Jsoup.connect(url).get();
-		url = url.substring(0,url.indexOf(".io")+3);
-		Elements pageList = dom.select(".page__content.e-content"); 
+		Elements pageList = dom.select(".react-directory-row.undefined"); 
 		
 		List<Map<String,Object>> returnList = new ArrayList<>();
- 
-		Elements pageChild = pageList.get(0).children();
-		for(int i = 0; i < pageChild.size(); i++) {
-			Map<String,Object> pageChildData = new HashMap<String, Object>();
-			
-			Document childDom = Jsoup.connect(url+pageChild.get(i).select("a").attr("href")).get();
-			Elements mainDom = childDom.select(".page__content.e-content > ul");
-			
-			Elements tables = mainDom.get(0).children();
-			List<String> childs = new ArrayList<String>();
-			for(Element e : tables) {
-				childs.add(e.select("h1").text());
-			}
-			pageChildData.put("title", pageChild.get(i).select("a").text());
-			pageChildData.put("url", pageChild.get(i).select("a").attr("href"));
-			pageChildData.put("childs", childs);
-			returnList.add(pageChildData);
-		}
 		
+		for(int i = pageList.size()-1; i > -1; i--) {
+			Map<String,Object> onePage = new HashMap<String, Object>();
+			Element e = pageList.get(i).select("a").get(1);
+			onePage.put("title", e.attr("title").replace(".txt", ""));
+			onePage.put("url", e.attr("href"));
+			returnList.add(onePage); 
+		}
+		 
 		return returnList;
 	}
+	
+	
+	public List<String> getChilds(String url) {
+		Document dom = null;
+		try {
+			dom = Jsoup.connect("https://github.com"+url).get();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(dom.html());
+		System.out.println(url);
+		return null;
+	} 
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public List<Map<String,Object>> getQuizeToJson(Map<String,Object> body) throws IOException {
@@ -114,6 +118,10 @@ public class MainService {
 		int type = (int)body.get("type");
 		String url = (String)body.get("url");
 		
+		Document dom = Jsoup.connect(url).get();
+		url = url.substring(0,url.indexOf(".io")+3);
+		Elements pageList = dom.select(".page__content.e-content"); 
+		
 		int allQuizCnt = json.size()*funcList.size();
 		allQuizCnt = allQuizCnt < cnt ? allQuizCnt : cnt;
 		
@@ -139,9 +147,10 @@ public class MainService {
 			}
 			indexTitle.put(key, su);
 		}
-		
+		System.out.println(pageList);
 		
 		List<Map<String,Object>> quizs = new ArrayList<>();  
+		
 		
 		
 		for(int i = 0; i < allQuizCnt; i++) {
@@ -155,10 +164,13 @@ public class MainService {
 			
 			Map<String,Object> parameter = new HashMap<String, Object>();
 			parameter.put("json", oneJson); 
+			
 			if((boolean)funcList.get(ranfunc).get("ex")) {
 				
+				
 			}
-			quizs.add((Map<String,Object>)((Function)funcList.get(ranfunc).get("func")).apply(parameter));
+			
+			quizs.add((Map<String,Object>)((Function<Map<String, Object>, Map<String, Object>>)funcList.get(ranfunc).get("func")).apply(parameter));
 		
 		}
 		
@@ -245,6 +257,7 @@ public class MainService {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz1(Map<String,Object> parameter){
 		Map<String,Object> oneQuiz = new HashMap<String, Object>();
 		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
@@ -261,6 +274,7 @@ public class MainService {
 		return oneQuiz;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz2(Map<String,Object> parameter){
 		Map<String,Object> oneQuiz = new HashMap<String, Object>();
 		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
@@ -273,6 +287,8 @@ public class MainService {
 		oneQuiz.put("ex", false);
 		return oneQuiz;
 	}
+	
+	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz3(Map<String,Object> parameter){
 		Map<String,Object> oneQuiz = new HashMap<String, Object>();
 		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
@@ -289,6 +305,7 @@ public class MainService {
 		return oneQuiz;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz4(Map<String,Object> parameter){
 		Map<String,Object> oneQuiz = new HashMap<String, Object>();
 		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
@@ -301,7 +318,6 @@ public class MainService {
 		oneQuiz.put("ex", false);
 		return oneQuiz;
 	}
-	
 	
 	
 	

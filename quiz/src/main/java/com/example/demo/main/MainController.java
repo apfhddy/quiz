@@ -29,6 +29,13 @@ public class MainController {
 		return mainService.getPages(url, token);
 	}
 	
+	@RequestMapping(value="childs", method=RequestMethod.GET)
+	@ResponseBody
+	public List<String> getChilds(@RequestParam(name="url") String url){
+		return mainService.getChilds(url);
+	}
+	
+	
 	@RequestMapping(value="quizjson", method=RequestMethod.POST)
 	@ResponseBody
 	public List<Map<String,Object>> getQuizeToJson(@RequestBody Map<String,Object> body) throws IOException {
