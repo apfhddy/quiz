@@ -17,17 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class MainService {
-	private int langCnt = 2; 
-	private int typeCnt = 2;
+	//private int langCnt = 2; 
+	//private int typeCnt = 2;
 	
-	private Map<String,Object> settingFunc = new HashMap<String, Object>();
+	private List<Map<String,Object>> funcList = new ArrayList<Map<String,Object>>();
 	
 	public MainService() {
-		Function<Integer, Map<String,Object>> f1 = s -> quiz1(s);
+		Map<String,Object> settingFunc = new HashMap<String, Object>();
 		
+		Function<Map<String,Object>, Map<String,Object>> f1 = s -> quiz1(s);
 		settingFunc.put("func", f1);
-		settingFunc.put("func", f1);
-		System.out.println(settingFunc.get("func").getClass()); 
+		settingFunc.put("ex", false);
+		funcList.add(settingFunc);
 	}
 	
 	
@@ -106,7 +107,7 @@ public class MainService {
 		int type = (int)body.get("type");
 		String url = (String)body.get("url");
 		
-		int allQuizCnt = json.size()*langCnt*typeCnt;
+		int allQuizCnt = json.size()*funcList.size();
 		allQuizCnt = allQuizCnt < cnt ? allQuizCnt : cnt;
 		
 		
@@ -118,7 +119,6 @@ public class MainService {
 		List<Integer> keys = new ArrayList<Integer>();
 		
 		addRandomQuiz(json.size(), allQuizCnt, indexCnt, keys);
-		System.out.println(indexCnt);
 		
 		
 		
@@ -129,7 +129,7 @@ public class MainService {
 		for(int i = 0; i < keys.size(); i++) {
 			int key = keys.get(i);
 			List<Integer> su = new ArrayList<Integer>();
-			for(int j = 0; j < langCnt*typeCnt; j++) {
+			for(int j = 0; j < funcList.size(); j++) {
 				su.add(j);
 			}
 			indexTitle.put(key, su);
@@ -142,8 +142,18 @@ public class MainService {
 			int index = getRandomQuiz(indexCnt, keys);
 			Map<String,Object> oneJson = json.get(index);
 			
+			int ranfuncIndex = RAN(0,indexTitle.get(index).size()-1);
+			indexTitle.get(index).remove(ranfuncIndex);
 			
+			Map<String,Object> parameter = new HashMap<String, Object>();
+			parameter.put("json", oneJson); 
+			if((boolean)funcList.get(ranfuncIndex).get("ex")) {
+				
+			}else {
+				
+			}
 			
+			((Function)funcList.get(ranfuncIndex).get("func")).apply(parameter);
 		
 		}
 		
@@ -172,11 +182,11 @@ public class MainService {
 				indexCnt.put(ran, 1);
 				keys.add(ran);
 			}
-			else if(indexCnt.get(ran) != langCnt*typeCnt) {
+			if(indexCnt.get(ran) != funcList.size()) {
 				indexCnt.compute(ran, (k,v) -> v= v+1);
-				if(indexCnt.get(ran) == langCnt*typeCnt)
-					ranArr.remove(index);
 			}
+			if(indexCnt.get(ran) == funcList.size())
+				ranArr.remove(index);
 		}
 	}
 	
@@ -194,7 +204,8 @@ public class MainService {
 	}
 	
 	
-	public Map<String,Object> quiz1(int a){
+	public Map<String,Object> quiz1(Map<String,Object> parameter){
+		System.out.println(parameter);
 		return null;
 	}
 	
