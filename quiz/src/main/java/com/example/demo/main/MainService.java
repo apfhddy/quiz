@@ -29,6 +29,13 @@ public class MainService {
 		settingFunc.put("func", f1);
 		settingFunc.put("ex", false);
 		funcList.add(settingFunc);
+		
+		settingFunc = new HashMap<String, Object>();
+		Function<Map<String,Object>, Map<String,Object>> f2 = param -> quiz2(param);
+		settingFunc.put("func", f2);
+		settingFunc.put("ex", false);
+		funcList.add(settingFunc);
+		
 	}
 	
 	
@@ -113,7 +120,6 @@ public class MainService {
 		
 		
 		
-		
 		Map<Integer,Integer> indexCnt = new HashMap<Integer,Integer>();
 		List<Integer> keys = new ArrayList<Integer>();
 		
@@ -143,21 +149,38 @@ public class MainService {
 			Map<String,Object> oneJson = json.get(index);
 			
 			int ranfuncIndex = RAN(0,indexTitle.get(index).size()-1);
+			int ranfunc = indexTitle.get(index).get(ranfuncIndex);
 			indexTitle.get(index).remove(ranfuncIndex);
+			
 			
 			Map<String,Object> parameter = new HashMap<String, Object>();
 			parameter.put("json", oneJson); 
-			if((boolean)funcList.get(ranfuncIndex).get("ex")) {
+			if((boolean)funcList.get(ranfunc).get("ex")) {
 				
 			}
-			
-			quizs.add((Map<String,Object>)((Function)funcList.get(ranfuncIndex).get("func")).apply(parameter));
+			quizs.add((Map<String,Object>)((Function)funcList.get(ranfunc).get("func")).apply(parameter));
 		
 		}
 		
 		
 		return quizs;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -171,7 +194,6 @@ public class MainService {
 		for(int i = 0; i < jsonSize; i++) {
 			ranArr.add(i);
 		}
-			
 		for(int i = 0; i < allQuizCnt; i++) {
 			int index = RAN(0, ranArr.size()-1); //ranArr의 무작위 인덱스값
 			int ran = ranArr.get(index); //raArr의 해당 인덱스의 값
@@ -180,7 +202,7 @@ public class MainService {
 				indexCnt.put(ran, 1);
 				keys.add(ran);
 			}
-			if(indexCnt.get(ran) != funcList.size()) {
+			else if(indexCnt.get(ran) != funcList.size()) {
 				indexCnt.compute(ran, (k,v) -> v= v+1);
 			}
 			if(indexCnt.get(ran) == funcList.size())
@@ -207,6 +229,22 @@ public class MainService {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public Map<String,Object> quiz1(Map<String,Object> parameter){
 		Map<String,Object> oneQuiz = new HashMap<String, Object>();
 		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
@@ -223,7 +261,46 @@ public class MainService {
 		return oneQuiz;
 	}
 	
+	public Map<String,Object> quiz2(Map<String,Object> parameter){
+		Map<String,Object> oneQuiz = new HashMap<String, Object>();
+		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
+		
+		Map<String,Object> answers = new HashMap<String, Object>();
+		answers.put((String)json.get("en"), 1);
+		
+		oneQuiz.put("title", json.get("kr")+"의 뜻을 가진 영어 스펠링은?");
+		oneQuiz.put("answers", answers);
+		oneQuiz.put("ex", false);
+		return oneQuiz;
+	}
+	public Map<String,Object> quiz3(Map<String,Object> parameter){
+		Map<String,Object> oneQuiz = new HashMap<String, Object>();
+		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
+		
+		Map<String,Object> answers = new HashMap<String, Object>();
+		String[] answersArr = ((String)json.get("kr")).split(",");
+		for(int i = 0; i < answersArr.length; i++) {
+			answers.put(answersArr[i], 1);
+		}
+		
+		oneQuiz.put("title", json.get("en")+"의 뜻은?");
+		oneQuiz.put("answers", answers);
+		oneQuiz.put("ex", false);
+		return oneQuiz;
+	}
 	
+	public Map<String,Object> quiz4(Map<String,Object> parameter){
+		Map<String,Object> oneQuiz = new HashMap<String, Object>();
+		Map<String,Object> json = (Map<String,Object>)parameter.get("json");
+		
+		Map<String,Object> answers = new HashMap<String, Object>();
+		answers.put((String)json.get("en"), 1);
+		
+		oneQuiz.put("title", json.get("kr")+"의 뜻을 가진 영어 스펠링은?");
+		oneQuiz.put("answers", answers);
+		oneQuiz.put("ex", false);
+		return oneQuiz;
+	}
 	
 	
 	
