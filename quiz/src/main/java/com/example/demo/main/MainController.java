@@ -38,9 +38,7 @@ public class MainController {
 	@RequestMapping(value="quiz", method=RequestMethod.POST)
 	@ResponseBody
 	public List<Map<String,Object>> getQuize(@RequestBody Map<String,Object> body) throws IOException {
-		
-		mainService.getQuize(body);
-		return null;
+		return mainService.getQuize(body);
 	}
 	
 }

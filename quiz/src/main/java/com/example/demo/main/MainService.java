@@ -25,7 +25,7 @@ public class MainService {
 	public MainService() {
 		Map<String,Object> settingFunc = new HashMap<String, Object>();
 		
-		Function<Map<String,Object>, Map<String,Object>> f1 = s -> quiz1(s);
+		Function<Map<String,Object>, Map<String,Object>> f1 = param -> quiz1(param);
 		settingFunc.put("func", f1);
 		settingFunc.put("ex", false);
 		funcList.add(settingFunc);
@@ -151,12 +151,12 @@ public class MainService {
 				
 			}
 			
-			((Function)funcList.get(ranfuncIndex).get("func")).apply(parameter);
+			quizs.add((Map<String,Object>)((Function)funcList.get(ranfuncIndex).get("func")).apply(parameter));
 		
 		}
 		
 		
-		return null;
+		return quizs;
 	}
 	
 	
@@ -200,6 +200,11 @@ public class MainService {
 		}
 		return index;
 	}
+	
+	
+	
+	
+	
 	
 	
 	public Map<String,Object> quiz1(Map<String,Object> parameter){

@@ -412,7 +412,9 @@
 						data:JSON.stringify({json:json,cnt:+cnt,type:+type,url:url}),
 						type:'post',
 					 	contentType: 'application/json',
-					 	success:console.log('hi')
+					 	success:function(result){
+					 		console.log(result);
+					 	}
 					})
 				}
 			})
