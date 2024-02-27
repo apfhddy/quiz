@@ -81,7 +81,7 @@ public class MainService {
 		StringBuilder textFile = new StringBuilder();
 		String line = null;
 		try {
-			br =new BufferedReader(new InputStreamReader(page.openStream()));
+			br =new BufferedReader(new InputStreamReader(page.openStream(),"UTF-8"));
 			while((line = br.readLine())!= null) {
 				textFile.append(line+",");
 			}
@@ -89,11 +89,19 @@ public class MainService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		String text = textFile.toString();
 		
-		System.out.println(textFile);
+		List<String> titles = new ArrayList<String>();
+		int start = -1;
+		while((start = text.indexOf("---,")) != -1) {
+			start+=4;
+			int end = text.indexOf("===,")-1;
+			String title = text.substring(start, end);
+			text = text.substring(end+4);
+			titles.add(title);
+		}
 		
-		
-		return null;
+		return titles;
 	} 
 	
 	
