@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -95,7 +96,9 @@ public class SubMethods {
 		return returnMap;
 	}	
 	
-	
+	//public List<String> getExs(Element){
+		
+	//}
 	
 	
 	

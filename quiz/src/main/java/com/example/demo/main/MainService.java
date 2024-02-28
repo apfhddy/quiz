@@ -45,11 +45,16 @@ public class MainService {
 	
 	
 	
-	public List<Map<String,Object>> getPages(String url, String token) throws IOException {
+	public List<Map<String,Object>> getPages(String url, String token)  {
 		if(!url.contains("http"))return null;
 		
 		
-		Document dom = Jsoup.connect(url).get();
+		Document dom = null;
+		try {
+			dom = Jsoup.connect(url).get();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		Elements pageList = dom.select(".react-directory-row.undefined"); 
 		
 		List<Map<String,Object>> returnList = new ArrayList<>();
@@ -130,8 +135,9 @@ public class MainService {
 		int allQuizCnt = json.size()*funcList.size();
 		allQuizCnt = allQuizCnt < cnt ? allQuizCnt : cnt;
 		
-		System.out.println(exPageList.size()+" "+json.size());
-		
+		if(exPageList.size() == 1) {
+			getExsCheck(exPageList.get(0).attr("href"));
+		}
 		
 		
 		
@@ -182,6 +188,14 @@ public class MainService {
 		
 		
 		return quizs;
+	}
+	
+	public List<String> getExsCheck(String url){
+		
+		String text = subMethods.getGitTextFile(url);
+		Map<String,String> childIdMap = subMethods.textToMap(text);
+		System.out.println(childIdMap);
+		return null;
 	}
 	
 
