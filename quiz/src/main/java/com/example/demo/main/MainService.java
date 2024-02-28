@@ -125,11 +125,12 @@ public class MainService {
 		String url = (String)body.get("url");
 		
 		Document dom = Jsoup.connect(url).get();
-		url = url.substring(0,url.indexOf(".io")+3);
-		Elements pageList = dom.select(".page__content.e-content"); 
+		Elements exPageList = dom.select(".react-directory-row.undefined"); 
 		
 		int allQuizCnt = json.size()*funcList.size();
 		allQuizCnt = allQuizCnt < cnt ? allQuizCnt : cnt;
+		
+		System.out.println(exPageList.size()+" "+json.size());
 		
 		
 		
@@ -153,7 +154,6 @@ public class MainService {
 			}
 			indexTitle.put(key, su);
 		}
-		System.out.println(pageList);
 		
 		List<Map<String,Object>> quizs = new ArrayList<>();  
 		
