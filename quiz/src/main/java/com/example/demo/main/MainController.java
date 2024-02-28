@@ -38,7 +38,7 @@ public class MainController {
 	
 	@RequestMapping(value="quizjson", method=RequestMethod.POST)
 	@ResponseBody
-	public List<Map<String,Object>> getQuizeToJson(@RequestBody Map<String,Object> body) throws IOException {
+	public List<Map<String,String>> getQuizeToJson(@RequestBody Map<String,Object> body) throws IOException {
 		return mainService.getQuizeToJson(body);
 	}
 

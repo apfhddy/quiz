@@ -191,9 +191,11 @@
 		let pageDom = {};
 		
 		
+		let pageChild = {};// ajax통신 빈도를 줄이기 위한 저장맵
+		
 		let firstPage;//첫번째 이름이랑 두번째 이름이랑 다르면 
 		
-		let pageData = {index:null,childs:{}};//현재 선택한 페이지
+		let pageData = {index:null,childs:{}};//현재 선택한 페이지 인덱스랑 dom관리
 		
 		let checkList = {};//체크한 체크 리스트
 		
@@ -277,106 +279,121 @@
 			
 			let t = this;
 			
-			$.ajax({
-				url:'childs',
-				data:{url:resultPage[index]['url']},
-				type:'get',
-				success: function(result){
-					dom.querySelector('.childs').style.top = (t.getBoundingClientRect().y-30)+'px';
-					dom.querySelector('.childs-list').innerHTML = '';
-					let i = 1;
-					result.forEach( c => {
-						const mainDiv = dom.createElement('div');
-						mainDiv.className = 'childs-item'
-						const newLabel = dom.createElement('label');
-						const newInput = dom.createElement('input');
-						if(checkList[pageIndex] != null && checkList[pageIndex]['childs'][c] != null)newInput.setAttribute("checked", "checked");
-						
-						let id = 'check-'+i++;
-						newLabel.setAttribute('for', id);
-						newLabel.innerText = c;
-						
-						newInput.type = 'checkbox';
-						newInput.id = id;
-						newInput.addEventListener("click", function(){
-							let title = this.parentElement.children[0].innerText;
-							if(this.checked == true){
-								if(checkList[pageIndex] == null){
-									checkList[pageIndex] = {childs:{},url:resultPage[pageIndex]['url']};
+			
+			function thisfunction(childs){
+				dom.querySelector('.childs').style.top = (t.getBoundingClientRect().y-30)+'px';
+				dom.querySelector('.childs-list').innerHTML = '';
+				let i = 1;
+				childs.forEach( c => {
+					const mainDiv = dom.createElement('div');
+					mainDiv.className = 'childs-item'
+					const newLabel = dom.createElement('label');
+					const newInput = dom.createElement('input');
+					if(checkList[pageIndex] != null && checkList[pageIndex]['childs'][c] != null)newInput.setAttribute("checked", "checked");
+					
+					let id = 'check-'+i++;
+					newLabel.setAttribute('for', id);
+					newLabel.innerText = c;
+					
+					newInput.type = 'checkbox';
+					newInput.id = id;
+					newInput.addEventListener("click", function(){
+						let title = this.parentElement.children[0].innerText;
+						if(this.checked == true){
+							if(checkList[pageIndex] == null){
+								checkList[pageIndex] = {childs:{},url:resultPage[pageIndex]['url']};
+							
+								const checkDiv = dom.createElement("div");
+								checkDiv.className = 'checks-item';
+	
+								const titleDiv = dom.createElement("div");
+								const titlecd1 = dom.createElement("div");
+								const titlecd2 = dom.createElement("div");
+								titlecd1.innerText = resultPage[pageIndex]['title'];
+								titlecd2.innerText = '▽';
 								
-									const checkDiv = dom.createElement("div");
-									checkDiv.className = 'checks-item';
-		
-									const titleDiv = dom.createElement("div");
-									const titlecd1 = dom.createElement("div");
-									const titlecd2 = dom.createElement("div");
-									titlecd1.innerText = resultPage[pageIndex]['title'];
-									titlecd2.innerText = '▽';
-									
-									titleDiv.appendChild(titlecd1);
-									titleDiv.appendChild(titlecd2);
-									
-									const childsDiv = dom.createElement("div");
-									childsDiv.style.display = 'none';
-									childsDiv.className = 'item-childs';
-									
-									titleDiv.addEventListener("click", function() {
-										if(childsDiv.style.display == 'none'){
-											childsDiv.style.display = '';
-											titlecd2.innerText = '△';
-										}else{
-											childsDiv.style.display = 'none';
-											titlecd2.innerText = '▽';
-										}
-											
-									})
-									
-									
-									checkDiv.appendChild(titleDiv);
-									checkDiv.appendChild(childsDiv);
-									
-									dom.querySelector('.checks-list').appendChild(checkDiv);
-									pageDom[pageIndex] = {childsDom:{},mainDom:checkDiv};
-								}
-								checkList[pageIndex]['childs'][title] = 1;
+								titleDiv.appendChild(titlecd1);
+								titleDiv.appendChild(titlecd2);
 								
+								const childsDiv = dom.createElement("div");
+								childsDiv.style.display = 'none';
+								childsDiv.className = 'item-childs';
 								
-								const itemDiv = dom.createElement("div");
-								itemDiv.className = 'childs-item';
-								
-								const itemcd1 = dom.createElement("div");
-								itemcd1.innerText = title;
-								
-								const itemcd2 = dom.createElement("div");
-								itemcd2.innerText = 'x';
-								
-								itemcd2.addEventListener("click", function(e) {
-									let listIndex = domIndexof(dom.querySelector('.checks-list'),this.parentElement.parentElement.parentElement);
-									pageChildDel(listIndex, title);
+								titleDiv.addEventListener("click", function() {
+									if(childsDiv.style.display == 'none'){
+										childsDiv.style.display = '';
+										titlecd2.innerText = '△';
+									}else{
+										childsDiv.style.display = 'none';
+										titlecd2.innerText = '▽';
+									}
+										
 								})
 								
 								
-								itemDiv.appendChild(itemcd1);
-								itemDiv.appendChild(itemcd2);
+								checkDiv.appendChild(titleDiv);
+								checkDiv.appendChild(childsDiv);
 								
-								pageDom[pageIndex]['mainDom'].querySelector('.item-childs').appendChild(itemDiv);
-								pageDom[pageIndex]['childsDom'][title] = itemDiv;
-								
-							}else{
-								pageChildDel(pageIndex, title);
+								dom.querySelector('.checks-list').appendChild(checkDiv);
+								pageDom[pageIndex] = {childsDom:{},mainDom:checkDiv};
 							}
-						})
-						mainDiv.appendChild(newLabel);
-						mainDiv.appendChild(newInput);
-						
-						pageData['childs'][c] = mainDiv;
-						
-						dom.querySelector('.childs-list').appendChild(mainDiv);
-					});
-						if(dom.querySelector('.childs').style.display == '')return;
-						dom.querySelector('.childs').style.display = '';
-				}
-			})
+							checkList[pageIndex]['childs'][title] = 1;
+							
+							
+							const itemDiv = dom.createElement("div");
+							itemDiv.className = 'childs-item';
+							
+							const itemcd1 = dom.createElement("div");
+							itemcd1.innerText = title;
+							
+							const itemcd2 = dom.createElement("div");
+							itemcd2.innerText = 'x';
+							
+							itemcd2.addEventListener("click", function(e) {
+								let listIndex = domIndexof(dom.querySelector('.checks-list'),this.parentElement.parentElement.parentElement);
+								pageChildDel(listIndex, title);
+							})
+							
+							
+							itemDiv.appendChild(itemcd1);
+							itemDiv.appendChild(itemcd2);
+							
+							pageDom[pageIndex]['mainDom'].querySelector('.item-childs').appendChild(itemDiv);
+							pageDom[pageIndex]['childsDom'][title] = itemDiv;
+							
+						}else{
+							pageChildDel(pageIndex, title);
+						}
+					})
+					mainDiv.appendChild(newLabel);
+					mainDiv.appendChild(newInput);
+					
+					pageData['childs'][c] = mainDiv;
+					dom.querySelector('.childs-list').appendChild(mainDiv);
+				});
+					if(dom.querySelector('.childs').style.display == '')return;
+					dom.querySelector('.childs').style.display = '';
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			if(pageChild[index] == null)
+				$.ajax({
+					url:'childs',
+					data:{url:resultPage[index]['url']},
+					type:'get',
+					success: function(result){
+						thisfunction(result);
+						pageChild[index] = result;
+					}
+				})
+			else thisfunction(pageChild[index]);
 			
 			
 			
