@@ -167,7 +167,7 @@ public class MainService {
 		
 		List<Map<String,Object>> quizs = new ArrayList<>();  
 		
-		
+		subMethods.getExs(exPageList);
 		
 		for(int i = 0; i < allQuizCnt; i++) {
 			int index = subMethods.getRandomQuiz(indexCnt, keys);

@@ -6,12 +6,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -96,9 +97,47 @@ public class SubMethods {
 		return returnMap;
 	}	
 	
-	//public List<String> getExs(Element){
+	
+	
+	
+	
+	
+	
+	
+	
+	public List<String> getExs(Elements pages){
+		Set<String> exs = new HashSet<>();
 		
-	//}
+		for(int i = 0; exs.size() == 4; i++) {
+			if(i == 30)break;
+			int pageRan = RAN(0, pages.size()-1);
+			
+			String text = getGitTextFile(pages.get(pageRan).select("a").attr("href").replace("/blob",""));
+		
+			Map<String,String> childIdMap = textToMap(text);
+			
+			System.out.println(childIdMap);
+		}
+		
+		
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -124,6 +163,19 @@ public class SubMethods {
 		return oneQuiz;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz2(Map<String,Object> parameter){
 		Map<String,Object> oneQuiz = new HashMap<String, Object>();
@@ -137,6 +189,18 @@ public class SubMethods {
 		oneQuiz.put("ex", false);
 		return oneQuiz;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz3(Map<String,Object> parameter){
@@ -154,6 +218,16 @@ public class SubMethods {
 		oneQuiz.put("ex", false);
 		return oneQuiz;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public Map<String,Object> quiz4(Map<String,Object> parameter){
