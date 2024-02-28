@@ -135,8 +135,12 @@ public class MainService {
 		int allQuizCnt = json.size()*funcList.size();
 		allQuizCnt = allQuizCnt < cnt ? allQuizCnt : cnt;
 		
+		
 		if(exPageList.size() == 1) {
-			getExsCheck(exPageList.get(0).select("a").attr("href").replace("/blob", ""));
+			String checkUrl = exPageList.get(0).select("a").attr("href").replace("/blob", ""); 
+			if(!subMethods.getExsCheck(checkUrl)) {
+				
+			}
 		}
 		
 		
@@ -190,19 +194,7 @@ public class MainService {
 		return quizs;
 	}
 	
-	public boolean getExsCheck(String url){
-		System.out.println(url);
-		String text = subMethods.getGitTextFile(url);
-		Map<String,String> childIdMap = subMethods.textToMap(text);
-		
-		int totalLength = 0;
-		
-		for(String key : childIdMap.keySet()) {
-			totalLength += ((String)childIdMap.get(key)).split("\r\n").length;
-		}
-		
-		return totalLength > 5;
-	}
+	
 	
 
 }

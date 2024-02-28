@@ -204,6 +204,21 @@ public class SubMethods {
 		return targetIndex;
 	}
 	
+	public boolean getExsCheck(String url){
+		String text = getGitTextFile(url);
+		Map<String,String> childIdMap = textToMap(text);
+		
+		int totalLength = 0;
+		
+		for(String key : childIdMap.keySet()) {
+			totalLength += ((String)childIdMap.get(key)).split("\r\n").length;
+		}
+		
+		return totalLength > 5;
+	}
+	
+	
+	
 	
 	
     public  int RAN(int min,int max) { /// 1 10
