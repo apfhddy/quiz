@@ -127,14 +127,15 @@ public class SubMethods {
 			
 			int valueRan = RAN(0, values.length-1);
 			
-			String[] value = values[valueRan].split(":");
+			String value = values[valueRan].split(":")[lang-1];
 			
-			if(!value[lang-1].equals("target"))
-				returnList.add(value[lang-1]);
+			if(exs.get(value) == null && !value.equals("target")) {
+				exs.put(value, 1);
+				returnList.add(value);
+			}
 		}
 		
-		System.out.println(returnList);
-		return null;
+		return returnList;
 	}
 	
 	
