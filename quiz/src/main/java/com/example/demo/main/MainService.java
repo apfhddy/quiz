@@ -125,8 +125,12 @@ public class MainService {
 	public List<Map<String,Object>> getQuize(@RequestBody Map<String,Object> body) throws IOException {
 		
 		List<Map<String,Object>> json = (List<Map<String,Object>>)body.get("json");
-		int cnt = (int)body.get("cnt");
-		int type = (int)body.get("type");
+		
+		int cnt = (int)body.get("cnt");//巩力 冉荐
+		int type = (int)body.get("type");//按包侥 林包侥
+		int lang = (int)body.get("lang");
+		
+		
 		String url = (String)body.get("url");
 		
 		Document dom = Jsoup.connect(url).get();
@@ -154,16 +158,19 @@ public class MainService {
 		
 		
 		
-		Map<Integer,List<Integer>> indexTitle = new HashMap<Integer, List<Integer>>();
-		
-		for(int i = 0; i < keys.size(); i++) {
-			int key = keys.get(i);
-			List<Integer> su = new ArrayList<Integer>();
-			for(int j = 0; j < funcList.size(); j++) {
-				su.add(j);
-			}
-			indexTitle.put(key, su);
-		}
+//		Map<Integer,List<Integer>> indexTitle = new HashMap<Integer, List<Integer>>();
+//		
+//		for(int i = 0; i < keys.size(); i++) {
+//			int key = keys.get(i);
+//			List<Integer> su = new ArrayList<Integer>();
+//			for(int j = 0; j < funcList.size(); j++) {
+//				su.add(j);
+//			}
+//			indexTitle.put(key, su);
+//		}
+//		int ranfuncIndex = subMethods.RAN(0,indexTitle.get(index).size()-1);
+//		int ranfunc = indexTitle.get(index).get(ranfuncIndex);
+//		indexTitle.get(index).remove(ranfuncIndex);
 		
 		List<Map<String,Object>> quizs = new ArrayList<>();  
 		
@@ -174,23 +181,21 @@ public class MainService {
 			int index = subMethods.getRandomQuiz(indexCnt, keys);
 			Map<String,Object> oneJson = json.get(index);
 			
-			int ranfuncIndex = subMethods.RAN(0,indexTitle.get(index).size()-1);
-			int ranfunc = indexTitle.get(index).get(ranfuncIndex);
-			indexTitle.get(index).remove(ranfuncIndex);
 			
 			
-			Map<String,Object> parameter = new HashMap<String, Object>();
-			parameter.put("json", oneJson); 
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			
 			subMethods.getExs(exPageList,1,(String)oneJson.get("lang1"),rememverMap);
 			
-			if((boolean)funcList.get(ranfunc).get("ex")) {
-				
-				
-			}
 			
-			quizs.add((Map<String,Object>)((Function<Map<String, Object>, Map<String, Object>>)funcList.get(ranfunc).get("func")).apply(parameter));
 		
 		}
 			
