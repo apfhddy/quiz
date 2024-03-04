@@ -193,9 +193,9 @@ public class MainService {
 			quizs.add((Map<String,Object>)((Function<Map<String, Object>, Map<String, Object>>)funcList.get(ranfunc).get("func")).apply(parameter));
 		
 		}
-		
-		
+			
 		return quizs;
+		
 	}
 	
 	
