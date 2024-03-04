@@ -7,10 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
@@ -105,21 +103,37 @@ public class SubMethods {
 	
 	
 	
-	public List<String> getExs(Elements pages){
-		Set<String> exs = new HashSet<>();
+	public List<String> getExs(Elements pages,int lang,String target,Map<Integer,Map<String,String>> rememverMap){
+		Map<String,Integer> exs = new HashMap<>();
 		
-		for(int i = 0; exs.size() == 4; i++) {
+		List<String> returnList = new ArrayList<String>();
+		
+		for(int i = 0; exs.size() != 4; i++) {
 			if(i == 30)break;
 			int pageRan = RAN(0, pages.size()-1);
+			Map<String,String> childIdMap = rememverMap.get(pageRan);
 			
-			String text = getGitTextFile(pages.get(pageRan).select("a").attr("href").replace("/blob",""));
-		
-			Map<String,String> childIdMap = textToMap(text);
+			if(childIdMap == null) {
+				String text = getGitTextFile(pages.get(pageRan).select("a").attr("href").replace("/blob",""));
+				childIdMap = textToMap(text);
+				rememverMap.put(pageRan, childIdMap);
+			}
 			
-			System.out.println(childIdMap);
+			List<String> keys = new ArrayList<>(childIdMap.keySet()); 
+			
+			String keyRan = keys.get(RAN(0, keys.size()-1));
+			
+			String[] values = childIdMap.get(keyRan).split("\r\n");
+			
+			int valueRan = RAN(0, values.length-1);
+			
+			String[] value = values[valueRan].split(":");
+			
+			if(!value[lang-1].equals("target"))
+				returnList.add(value[lang-1]);
 		}
 		
-		
+		System.out.println(returnList);
 		return null;
 	}
 	

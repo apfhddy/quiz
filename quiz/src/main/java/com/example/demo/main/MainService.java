@@ -167,7 +167,8 @@ public class MainService {
 		
 		List<Map<String,Object>> quizs = new ArrayList<>();  
 		
-		subMethods.getExs(exPageList);
+		//예시문제를 계속 텍스트에서 map으로 변환하면 손해 여서 저장
+		Map<Integer,Map<String,String>> rememverMap = new HashMap<Integer, Map<String,String>>();
 		
 		for(int i = 0; i < allQuizCnt; i++) {
 			int index = subMethods.getRandomQuiz(indexCnt, keys);
@@ -180,6 +181,9 @@ public class MainService {
 			
 			Map<String,Object> parameter = new HashMap<String, Object>();
 			parameter.put("json", oneJson); 
+			
+			
+			subMethods.getExs(exPageList,1,(String)oneJson.get("lang1"),rememverMap);
 			
 			if((boolean)funcList.get(ranfunc).get("ex")) {
 				
